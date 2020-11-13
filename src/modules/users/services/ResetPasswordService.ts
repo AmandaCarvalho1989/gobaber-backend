@@ -1,7 +1,9 @@
 import { injectable, inject } from 'tsyringe'
+import { isAfter, addHours } from 'date-fns'
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider'
 
 interface IRequest {
     token: string;
@@ -15,12 +17,13 @@ class ResetPasswordService {
         private usersRepository: IUsersRepository,
 
         @inject('UserTokensRepository')
-        private userTokensRepository: IUserTokensRepository
+        private userTokensRepository: IUserTokensRepository,
+
+        @inject('HashProvider')
+        private hashProvider: IHashProvider
     ) { }
     public async execute({ password, token }: IRequest): Promise<void> {
         const userToken = await this.userTokensRepository.findByToken(token)
-
-        console.log({ userToken })
 
         if (!userToken) {
             throw new AppError('User token does not exists')
@@ -32,11 +35,17 @@ class ResetPasswordService {
             throw new AppError('User does not exists')
         }
 
+        const tokenCreatedAt = user.created_at
+        const compareDate = addHours(tokenCreatedAt, 2)
+        // if (differenceInHours(tokenCreatedAt, Date.now()) > 2) {
+        // }
+        console.log({compareDate})
+        if (isAfter(Date.now(), compareDate)) {
+            throw new AppError('Token expired')
+        }
 
-        user.password = password
 
-
-        console.log('new user: ', user)
+        user.password = await this.hashProvider.generateHash(password)
 
         await this.usersRepository.save(user)
     }
