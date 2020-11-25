@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { container } from 'tsyringe'
 import CreateUserService from '@modules/users/services/CreateUserService';
+import UserMap from '../../typeorm/mapper/userMap';
 
 export default class UsersController {
     public async create(request: Request, response: Response): Promise<Response> {
@@ -14,9 +15,12 @@ export default class UsersController {
             password,
         });
 
-        delete user.password
+        const mappedUser = UserMap.toDTO(user);
 
-        return response.json(user);
+        return response.json(mappedUser);
+        // delete user.password
+
+        // return response.json(user);
     }
 
 }
