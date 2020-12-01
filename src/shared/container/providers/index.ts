@@ -8,11 +8,15 @@ import EtherealMailProvider from './MailProvider/implementations/EtherealMailPro
 
 import IMailTemplateProvider from './MailTemplateProvider/models/IMailTemplateProvider'
 import HandlebarsMailTemplateProvider from './MailTemplateProvider/implementations/HandlebarsMailTemplateProvider'
+import ICacheProvider from './CacheProvider/models/ICacheProvider'
+import RedisCacheProvider from './CacheProvider/implementations/RedisCacheProvider'
 
 container.registerSingleton<IStorageProvider>('StorageProvider', DiskStorageProvider)
 
 container.registerSingleton<IMailTemplateProvider>('MailTemplateProvider', HandlebarsMailTemplateProvider)
 
 container.registerInstance<IMailProvider>('MailProvider', container.resolve(EtherealMailProvider))
+
+container.registerInstance<ICacheProvider>('CacheProvider', container.resolve(RedisCacheProvider))
 // container.registerSingleton<IStorageProvider>('StorageProvider', DiskStorageProvider)
 
