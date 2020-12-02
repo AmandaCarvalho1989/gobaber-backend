@@ -3,6 +3,7 @@ import { injectable, inject } from 'tsyringe'
 import AppError from '@shared/errors/AppError';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
+import { classToClass } from 'class-transformer';
 
 interface Request {
     user_id: string;
@@ -15,7 +16,7 @@ class ShowProfileService {
         private usersRepository: IUsersRepository,
 
     ) { }
-    public async execute({ user_id,  }: Request): Promise<User> {
+    public async execute({ user_id, }: Request): Promise<User> {
 
         const user = await this.usersRepository.findById(user_id)
 
@@ -23,7 +24,8 @@ class ShowProfileService {
             throw new AppError('User not found')
         }
 
-      return user
+
+        return classToClass(user)
 
     }
 }
