@@ -37,8 +37,6 @@ class ListProviderAppointmentsService {
                 provider_id
             })
 
-
-            console.log('fez a query')
             await this.cacheProvider.save(cacheKey, appointments)
         }
 
