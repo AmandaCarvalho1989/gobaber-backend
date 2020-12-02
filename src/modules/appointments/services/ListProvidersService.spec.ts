@@ -3,15 +3,18 @@ import ListProvidersService from './ListProvidersService'
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository'
 import AppError from '@shared/errors/AppError'
 import ShowProfileService from '@modules/users/services/ShowProfileService';
+import FakeCacheProvider from '@shared/container/providers/CacheProvider/fakes/FakeCacheProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
 let listProvidersService: ListProvidersService;
+let fakeCacheProvider: FakeCacheProvider;
 
 describe('ListProviders', () => {
 
     beforeEach(() => {
         fakeUsersRepository = new FakeUsersRepository()
-        listProvidersService = new ListProvidersService(fakeUsersRepository)
+        fakeCacheProvider = new FakeCacheProvider()
+        listProvidersService = new ListProvidersService(fakeUsersRepository, fakeCacheProvider)
 
     })
 
